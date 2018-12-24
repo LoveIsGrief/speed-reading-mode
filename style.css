@@ -16,8 +16,8 @@
     position: fixed;
     top: 0;
     left: 0;
-    height: 100%;
-    width: 100%;
+    right: 0;
+    bottom: 0;
     display: none;
 }
 #speed-read-container.active {
@@ -44,7 +44,7 @@
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
+    right: 0;
     padding: 10px 15px 0;
     line-height: 1;
 }
