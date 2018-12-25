@@ -44,3 +44,21 @@ const parseArticle = (article, wait) => {
 	}, []);
 	return [...tokens, ['', TokenName.ARTICLE_END, wait.ARTICLE_END]];
 }
+
+function tokenizeText(text, wait) {
+	let result = [];
+
+	function _token(val, type) {
+		result.push([val, TokenName[type], wait[type]])
+	}
+
+	// Get paragraphs
+	for (let paragraph of text.split(/\n{2,}/)) {
+		for (let word of paragraph.split(/\s+/)) {
+			_token(word, "WORD")
+		}
+		_token('', "PARAGRAPH_END")
+	}
+	_token('', "ARTICLE_END")
+	return result
+}

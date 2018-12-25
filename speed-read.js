@@ -159,9 +159,23 @@ class SpeedRead {
 	}
 }
 
+/**
+ * Get the selected text in the current window
+ *
+ * Taken from https://stackoverflow.com/a/5379408
+ * @return {string}
+ */
+function getSelectionText() {
+    var text = "";
+    if (window.getSelection) {
+        text = window.getSelection().toString();
+    } else if (document.selection && document.selection.type != "Control") {
+        text = document.selection.createRange().text;
+    }
+    return text;
+}
+
 const run = async function(settings) {
-    let articleContent = readability.grabArticle();
-    articleContent = [...articleContent.childNodes[0].childNodes];
 
     const wait = {
         WORD: 60000 / parseInt(settings.wpm),
@@ -169,7 +183,17 @@ const run = async function(settings) {
         IMAGE: parseInt(settings.image),
         ARTICLE_END: 1000,
     };
-    const tokens = parseArticle(articleContent, wait);
+
+    // Build tokens and prefer selected text
+    const selectedText = getSelectionText();
+    let tokens;
+    if(selectedText){
+        tokens = tokenizeText(selectedText, wait);
+    } else{
+        let articleContent = readability.grabArticle();
+        articleContent = [...articleContent.childNodes[0].childNodes];
+        tokens = parseArticle(articleContent, wait);
+    }
     const speedRead = new SpeedRead(tokens, settings);
 
     const centerText = document.getElementById('speed-read-center-text');
